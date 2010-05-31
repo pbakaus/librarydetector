@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<overlay id="librarydetector" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+         
+<script type="application/x-javascript"><![CDATA[
+
+var LD_tests = {
+	
+	'jQuery': {
+		icon: 'chrome://librarydetector/content/jquery.ico',
+		test: function(win) {
+			var jq = win.jQuery || win.$ || win.$jq || win.$j;
+			if(jq && jq.fn && jq.fn.jquery) {
+				return { version: jq.fn.jquery };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'jQuery UI': {
+		icon: 'chrome://librarydetector/content/jquery_ui.ico',
+		//phonehome: 'http://jqueryui.com/phone_home',
+		test: function(win) {
+			
+			var jq = win.jQuery || win.$ || win.$jq || win.$j;
+			if(jq && jq.fn && jq.fn.jquery && jq.ui) {
+
+				var plugins = 'accordion,datepicker,dialog,draggable,droppable,progressbar,resizable,selectable,slider,menu,grid,tabs'.split(','), concat = [];
+				for (var i=0; i < plugins.length; i++) { if(jq.ui[plugins[i]]) concat.push(plugins[i].substr(0,1).toUpperCase() + plugins[i].substr(1)); };
+			
+				return { version: jq.ui.version, details: concat.length ? 'Plugins used: '+concat.join(',') : '' };
+			} else {
+				return false;
+			}
+			
+		}
+	},
+	
+	'Dojo': {
+		icon: 'chrome://librarydetector/content/dojo.ico',
+		test: function(win) {
+			if(win.dojo) {
+				return { version: win.dojo.version.toString(), details: 'Details: '+(win.dijit ? 'Uses Dijit' : 'none') };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'Prototype': {
+		icon: 'chrome://librarydetector/content/prototype.png',
+		test: function(win) {
+			if(win.Prototype && win.Prototype.Version) {
+				return { version: win.Prototype.Version };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'Scriptaculous': {
+		icon: 'chrome://librarydetector/content/scriptaculous.ico',
+		test: function(win) {
+			if(win.Scriptaculous && win.Scriptaculous.Version) {
+				return { version: win.Scriptaculous.Version };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'MooTools': {
+		icon: 'chrome://librarydetector/content/mootools.png',
+		test: function(win) {
+			if(win.MooTools && win.MooTools.version) {
+				return { version: win.MooTools.version };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'Spry': {
+		icon: 'chrome://librarydetector/content/spry.png',
+		test: function(win) {
+			if(win.Spry) {
+				return { version: '(not detectable)' };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'YUI': {
+		icon: 'chrome://librarydetector/content/yui.ico',
+		test: function(win) {
+			if(win.YAHOO && win.YAHOO.VERSION) {
+				return { version: win.YAHOO.VERSION };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'Qooxdoo': {
+		icon: 'chrome://librarydetector/content/qooxdoo.ico',
+		test: function(win) {
+			if(win.qx && win.qx.Bootstrap) {
+				return { version: '(not detectable)' };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'Ext JS': {
+		icon: 'chrome://librarydetector/content/extjs.ico',
+		test: function(win) {
+			if(win.Ext && win.Ext.version) {
+				return { version: win.Ext.version };
+			} else {
+				return false;
+			}
+		}
+	},
+	
+	'base2': {
+		icon: 'chrome://librarydetector/content/base2.gif',
+		test: function(win) {
+			if(win.base2 && win.base2.version) {
+				return { version: win.base2.version };
+			} else {
+				return false;
+			}
+		}
+	}
+	
+};
+
+
+function testLibraries() {
+
+	//If the currently loaded page is loaded in a background tab, we don't want the status bar to update
+	var win = gBrowser.selectedBrowser.contentWindow.wrappedJSObject;
+	
+	while ( document.getElementById("librarydetector").firstChild )
+		document.getElementById("librarydetector").removeChild( document.getElementById("librarydetector").firstChild );	
+	
+	var label = [];
+	
+	for(var i in LD_tests) {
+		
+		var passed = LD_tests[i].test(win);
+		if(passed) {
+			var node = document.createElement('statusbarpanel');
+			
+			if(LD_tests[i].icon) {
+				node.className = 'statusbarpanel-menu-iconic';
+				node.setAttribute('src', LD_tests[i].icon);
+			}
+
+			if(passed.version || passed.details) {
+				node.setAttribute('tooltiptext', i+'\nVersion: '+(passed.version || '(not detectable)')+'\n'+(passed.details || ''));
+			}
+			
+			node.setAttribute('label', i);
+			document.getElementById("librarydetector").appendChild(node);
+			
+			//If home phoning is activated, append a image to the actual page
+			if(LD_tests[i].phonehome) {
+				var img = win.document.createElement('img');
+				img.src = LD_tests[i].phonehome;
+				win.document.body.appendChild(img);
+			}
+			
+			
+		}
+		
+	}
+	
+	
+}
+
+window.addEventListener("load", function() {
+	var appcontent = document.getElementById("appcontent");   // browser
+	if(appcontent) appcontent.addEventListener("DOMContentLoaded", testLibraries, true);
+	gBrowser.tabContainer.addEventListener("TabSelect", testLibraries, false);
+}, false);
+
+
+]]></script>
+         
+         
+	<statusbar id="status-bar">
+		<box orient="horizontal" id="librarydetector">
+		</box>
+	</statusbar>
+</overlay>
