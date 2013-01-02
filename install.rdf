@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>librarydetector@paulbakaus.com</em:id>
-    <em:version>1.0.3</em:version>
+    <em:version>1.1</em:version>
     <em:type>2</em:type>
    
     <!-- Target Application this extension can install into, 
@@ -14,7 +14,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>3.6.*</em:maxVersion>
+        <em:maxVersion>20.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
    
@@ -23,5 +23,8 @@
     <em:description>Detects what javascript libraries are being used on the current page and displays the result as icons with detailed tooltips in the statusbar. Currently supports jQuery, jQuery UI, Prototype, Scriptaculous, Dojo, YUI, Qooxdoo, MooTools, Ext JS and Spry.</em:description>
     <em:creator>Paul Bakaus</em:creator>
     <em:homepageURL>http://www.paulbakaus.com/</em:homepageURL>
+
+    <em:bootstrap>true</em:bootstrap>
+    
   </Description>      
 </RDF>

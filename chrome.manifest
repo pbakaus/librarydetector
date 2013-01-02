@@ -1,2 +1,0 @@
-content	librarydetector	chrome/content/
-overlay chrome://browser/content/browser.xul chrome://librarydetector/content/librarydetector.xul
